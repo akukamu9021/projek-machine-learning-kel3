@@ -4,7 +4,6 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.tree import plot_tree
-import matplotlib.pyplot as plt
 import base64
 from io import StringIO
 
@@ -35,304 +34,148 @@ menu = st.sidebar.radio("📚 Menu", ["Klasifikasi", "Tentang"])
 lang = st.sidebar.selectbox("🌐 Pilih Bahasa | Choose Language", ["Indonesia", "English"])
 
 
-# === Tentang Aplikasi ===
+# =====================================================================
+# Halaman "Tentang Aplikasi"
+# =====================================================================
 if menu == "Tentang":
     if lang == "Indonesia":
         st.title("ℹ️ Tentang Aplikasi")
-        st.write("""
-Kelompok 3 dalam proyek ini membangun sistem klasifikasi berita menggunakan tiga modul utama: Regresi Logistik, Random Forest, dan Naive Bayes. Tujuan utama aplikasi ini adalah membantu pengguna mengidentifikasi apakah suatu berita termasuk kategori **REAL** atau **FAKE** dengan menggunakan teknik pembelajaran mesin (machine learning).
-        """)
-
-        st.markdown("---")
-        st.subheader("🧠 Modul yang Digunakan")
-
-        st.subheader("1. Regresi Logistik")
-        st.write("""
-Regresi Logistik adalah algoritma klasifikasi yang populer digunakan untuk masalah biner. Model ini mencoba memetakan input ke dalam probabilitas dua kelas berbeda, menggunakan fungsi logistik. Meskipun sederhana, regresi logistik sering memberikan hasil yang kompetitif dalam teks klasifikasi.
-
-**Classification Report - Logistic Regression:**
-
-```
-               precision    recall  f1-score   support
-
-           0       0.50      0.48      0.49       157
-           1       0.45      0.47      0.46       143
-
-    accuracy                           0.48       300
-   macro avg       0.48      0.48      0.48       300
-weighted avg       0.48      0.48      0.48       300
-```
-
-**Accuracy Score - Logistic Regression: 0.4767**
-        """)
-
-        st.subheader("2. Random Forest")
-        st.write("""
-Random Forest adalah metode ensemble yang menggunakan banyak pohon keputusan untuk meningkatkan akurasi prediksi dan mengurangi risiko overfitting. Model ini sangat cocok untuk menangani data teks yang bervariasi.
-
-**Classification Report - Random Forest:**
-
-```
-              precision    recall  f1-score   support
-
-           0       0.55      0.63      0.59       157
-           1       0.52      0.43      0.47       143
-
-    accuracy                           0.54       300
-   macro avg       0.53      0.53      0.53       300
-weighted avg       0.53      0.54      0.53       300
-```
-
-**Confusion Matrix:**
-```
-[[99 58]
- [81 62]]
-```
-
-**Accuracy Score - Random Forest: 0.5367**
-        """)
-
-        st.subheader("3. Naive Bayes")
-        st.write("""
-Naive Bayes adalah algoritma probabilistik berdasarkan Teorema Bayes dengan asumsi independensi antar fitur. Dalam klasifikasi teks, meskipun sederhana dan asumsi independensinya jarang terpenuhi, algoritma ini dikenal cepat dan efisien.
-
-**Classification Report - Naive Bayes:**
-
-```
-              precision    recall  f1-score   support
-
-           0       0.51      0.69      0.59       157
-           1       0.44      0.27      0.34       143
-
-    accuracy                           0.49       300
-   macro avg       0.48      0.48      0.46       300
-weighted avg       0.48      0.49      0.47       300
-```
-
-**Accuracy Score - Naive Bayes: 0.49**
-        """)
-
-        st.markdown("---")
-        st.subheader("🧾 Kesimpulan")
-        st.write("""
-Berdasarkan hasil evaluasi yang diperoleh dari ketiga model, dapat disimpulkan bahwa **Random Forest** memiliki performa paling baik dengan akurasi tertinggi sebesar **53.67%**, diikuti oleh **Naive Bayes** dengan **49%**, dan **Logistic Regression** dengan **47.67%**. 
-
-Walaupun semua model menunjukkan hasil akurasi di bawah 60%, ini bisa menjadi indikasi bahwa data yang digunakan memiliki tantangan tersendiri, seperti distribusi yang tidak seimbang atau kurangnya fitur penting yang membedakan antara berita asli dan palsu. Untuk peningkatan ke depan, perlu dipertimbangkan penggunaan dataset yang lebih besar, fitur engineering yang lebih mendalam. Eksperimen ini tetap memberikan wawasan berharga terhadap bagaimana berbagai model machine learning bekerja dalam konteks klasifikasi berita.
-        """)
-
+        st.write("Penjelasan mengenai proyek, modul yang digunakan, dan hasil evaluasi model ditempatkan di sini.")
     else: # English version
         st.title("ℹ️ About the App")
-        st.write("""
-In this project, Group 3 has developed a news classification system using three main modules: Logistic Regression, Random Forest, and Naive Bayes. The primary goal of this application is to assist users in identifying whether a news article is **REAL** or **FAKE** using machine learning techniques.
-        """)
-
-        st.markdown("---")
-        st.subheader("🧠 Modules Used")
-
-        st.subheader("1. Logistic Regression")
-        st.write("""
-Logistic Regression is a popular classification algorithm used for binary problems. This model attempts to map inputs into the probability of two distinct classes using a logistic function. Despite its simplicity, logistic regression often yields competitive results in text classification.
-
-**Classification Report - Logistic Regression:**
-
-```
-               precision    recall  f1-score   support
-
-           0       0.50      0.48      0.49       157
-           1       0.45      0.47      0.46       143
-
-    accuracy                           0.48       300
-   macro avg       0.48      0.48      0.48       300
-weighted avg       0.48      0.48      0.48       300
-```
-
-**Accuracy Score - Logistic Regression: 0.4767**
-        """)
-
-        st.subheader("2. Random Forest")
-        st.write("""
-Random Forest is an ensemble method that utilizes multiple decision trees to enhance prediction accuracy and mitigate the risk of overfitting. It is particularly well-suited for handling diverse text data.
-
-**Classification Report - Random Forest:**
-
-```
-              precision    recall  f1-score   support
-
-           0       0.55      0.63      0.59       157
-           1       0.52      0.43      0.47       143
-
-    accuracy                           0.54       300
-   macro avg       0.53      0.53      0.53       300
-weighted avg       0.53      0.54      0.53       300
-```
-
-**Confusion Matrix:**
-```
-[[99 58]
- [81 62]]
-```
-
-**Accuracy Score - Random Forest: 0.5367**
-        """)
-
-        st.subheader("3. Naive Bayes")
-        st.write("""
-Naive Bayes is a probabilistic algorithm based on Bayes' Theorem, with the assumption of independence between features. In text classification, despite its simplicity and the fact that its independence assumption is rarely fully met, the algorithm is known for its speed and efficiency.
-
-**Classification Report - Naive Bayes:**
-
-```
-              precision    recall  f1-score   support
-
-           0       0.51      0.69      0.59       157
-           1       0.44      0.27      0.34       143
-
-    accuracy                           0.49       300
-   macro avg       0.48      0.48      0.46       300
-weighted avg       0.48      0.49      0.47       300
-```
-
-**Accuracy Score - Naive Bayes: 0.49**
-        """)
-
-        st.markdown("---")
-        st.subheader("🧾 Conclusion")
-        st.write("""
-Based on the evaluation results from the three models, it can be concluded that **Random Forest** exhibits the best performance with the highest accuracy of **53.67%**, followed by **Naive Bayes** at **49%**, and **Logistic Regression** at **47.67%**.
-
-Although all models show accuracy results below 60%, this may indicate that the dataset presents unique challenges, such as an imbalanced distribution or a lack of critical features distinguishing between real and fake news. For future enhancements, considering a larger dataset and more in-depth feature engineering would be beneficial. This experiment nonetheless provides valuable insights into how various machine learning models perform in the context of news classification.
-        """)
+        st.write("An explanation of the project, the modules used, and the model evaluation results are placed here.")
 
 # =====================================================================
-# Halaman "Klasifikasi" (Teks Tunggal & Unggah File)
+# Halaman "Klasifikasi" (Gabungan Teks Tunggal & Unggah File)
 # =====================================================================
 elif menu == "Klasifikasi":
     # --- Bagian Klasifikasi Teks Tunggal ---
     if lang == "Indonesia":
         st.title("📰 Klasifikasi Berita: Real atau Fake?")
-        st.write("Masukkan judul dan isi berita untuk memprediksi apakah berita tersebut benar atau palsu.")
-        btn_example = "Gunakan Contoh Berita"
-        label_title = "Judul Berita"
-        label_text = "Isi Berita"
+        st.write("Masukkan judul dan isi berita di bawah ini untuk memprediksi apakah berita tersebut benar atau palsu.")
         btn_predict = "Prediksi Teks"
-        warning_input = "Silakan masukkan judul atau isi berita."
-        label_real = "✅ Berita ini terdeteksi sebagai: REAL"
-        label_fake = "❌ Berita ini terdeteksi sebagai: FAKE"
     else: # English
         st.title("📰 News Classification: Real or Fake?")
-        st.write("Enter the news title and content to predict whether it's real or fake.")
-        btn_example = "Use Example News"
-        label_title = "News Title"
-        label_text = "News Content"
+        st.write("Enter the news title and content below to predict whether it is real or fake.")
         btn_predict = "Predict Text"
-        warning_input = "Please enter a title or content first."
-        label_real = "✅ This news is detected as: REAL"
-        label_fake = "❌ This news is detected as: FAKE"
 
-    if st.button(btn_example):
-        st.session_state.title = "Government announces new subsidies for SMEs"
-        st.session_state.text = (
-            "The government today announced a new subsidy program to support micro, small, and medium enterprises..."
-        )
-        st.rerun()
-
-    title = st.text_input(label_title, value=st.session_state.get("title", ""))
-    text = st.text_area(label_text, value=st.session_state.get("text", ""))
+    title = st.text_input("Judul Berita" if lang == "Indonesia" else "News Title")
+    text = st.text_area("Isi Berita" if lang == "Indonesia" else "News Content", height=200)
 
     if st.button(btn_predict):
         if not title.strip() and not text.strip():
-            st.warning(warning_input)
+            st.warning("Silakan masukkan judul atau isi berita." if lang == "Indonesia" else "Please enter a title or content.")
         else:
             input_text = title + " " + text
             vectorized_input = vectorizer.transform([input_text])
             prediction = model.predict(vectorized_input)[0]
             
             if prediction == 1:
-                st.success(label_real)
+                st.success("✅ Berita ini terdeteksi sebagai: REAL" if lang == "Indonesia" else "✅ This news is detected as: REAL")
             else:
-                st.error(label_fake)
+                st.error("❌ Berita ini terdeteksi sebagai: FAKE" if lang == "Indonesia" else "❌ This news is detected as: FAKE")
     
     st.markdown("---")
 
-# --- Bagian Unggah & Klasifikasi File ---
-if lang == "Indonesia":
-    st.header("📂 Atau Unggah File CSV untuk Klasifikasi Massal")
-    st.info("Pastikan file Anda memiliki kolom 'title' dan 'text' untuk hasil terbaik.")
-else:  # English
-    st.header("📂 Or Upload a CSV File for Bulk Classification")
-    st.info("Ensure your file has 'title' and 'text' columns for the best results.")
+    # --- Bagian Unggah & Klasifikasi File Eksternal ---
+    if lang == "Indonesia":
+        st.header("📂 Atau Unggah File Berita Eksternal (.csv)")
+        st.info("Fitur ini memungkinkan Anda untuk mengklasifikasikan banyak berita sekaligus dari file CSV Anda. Pastikan file memiliki kolom 'title' dan 'text'.")
+    else: # English
+        st.header("📂 Or Upload an External News File (.csv)")
+        st.info("This feature allows you to classify multiple news articles at once from your CSV file. Ensure the file has 'title' and 'text' columns.")
 
-uploaded_file = st.file_uploader("Pilih file CSV", type="csv", label_visibility="collapsed")
+    uploaded_file = st.file_uploader("Pilih file CSV Anda", type="csv", label_visibility="collapsed")
 
-if uploaded_file is not None:
-    try:
-        df_uploaded = pd.read_csv(uploaded_file)
-        # === Validasi Kolom ===
-        if {'title', 'text'}.issubset(df_uploaded.columns):
-            # Pastikan kolom teks bertipe string
-            if not (pd.api.types.is_string_dtype(df_uploaded['title']) and
-                    pd.api.types.is_string_dtype(df_uploaded['text'])):
-                if lang == "Indonesia":
-                    st.error("❌ **Peringatan:** Kolom 'title' dan 'text' harus berisi data teks (kata/kalimat), bukan angka.")
-                else:
-                    st.error("❌ **Warning:** The 'title' and 'text' columns must contain text data (words/sentences), not numbers.")
-            else:
-                st.success("✅ File berhasil diunggah. Klik tombol di bawah untuk memulai klasifikasi." if lang == "Indonesia" else "✅ File uploaded successfully. Click the button below to start classification.")
-
+    if uploaded_file is not None:
+        try:
+            df_uploaded = pd.read_csv(uploaded_file)
+            if 'title' in df_uploaded.columns and 'text' in df_uploaded.columns:
+                st.success("✅ File berhasil diunggah. Klik tombol di bawah untuk memulai analisis.")
+                
                 if st.button("Mulai Klasifikasi File" if lang == "Indonesia" else "Start File Classification", type="primary"):
-                    with st.spinner('Memproses file...' if lang == "Indonesia" else 'Processing file...'):
-                        # === Prediksi ===
-                        df_uploaded['full_text'] = df_uploaded['title'].astype(str) + " " + df_uploaded['text'].astype(str)
+                    with st.spinner('Menganalisis file Anda...' if lang == "Indonesia" else 'Analyzing your file...'):
+                        
+                        df_uploaded['full_text'] = df_uploaded['title'].astype(str).fillna('') + " " + df_uploaded['text'].astype(str).fillna('')
                         X_uploaded = vectorizer.transform(df_uploaded['full_text'])
                         predictions = model.predict(X_uploaded)
                         df_uploaded['prediksi'] = ['REAL' if p == 1 else 'FAKE' for p in predictions]
-
-                        # === Tampilkan Hasil ===
-                        st.markdown("**Hasil Klasifikasi:**" if lang == "Indonesia" else "**Classification Results:**")
+                        
+                        st.markdown("---")
+                        st.subheader("Hasil Klasifikasi File Anda")
                         st.dataframe(df_uploaded)
 
-                        # === Visualisasi Hasil ===
-                        st.subheader("📊 Visualisasi Hasil Klasifikasi" if lang == "Indonesia" else "📊 Classification Visualization")
+                        # Visualisasi Hasil
+                        st.subheader("📊 Ringkasan Visual")
                         label_counts = df_uploaded['prediksi'].value_counts()
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.write("**Jumlah Prediksi**")
+                            st.bar_chart(label_counts)
 
-                        # Bar Chart (Streamlit built-in)
-                        st.bar_chart(label_counts)
-
-                        # Pie Chart (matplotlib)
-                        fig, ax = plt.subplots()
-                        ax.pie(label_counts, labels=label_counts.index, autopct='%1.1f%%', startangle=90)
-                        ax.axis('equal')
-                        st.pyplot(fig)
-
-                        st.write("**Visualisasi Salah Satu Pohon dari Random Forest:**")
-                        with st.spinner("Menampilkan pohon..."):
-                            fig, ax = plt.subplots(figsize=(20, 10))
+                        with col2:
+                            st.write("**Distribusi Prediksi**")
+                            fig_pie, ax_pie = plt.subplots()
+                            ax_pie.pie(label_counts, labels=label_counts.index, autopct='%1.1f%%', startangle=90, colors=['#66b3ff','#ff9999'])
+                            ax_pie.axis('equal')
+                            st.pyplot(fig_pie)
+                        
+                        # Visualisasi Pohon Keputusan
+                        st.markdown("---")
+                        st.subheader("🌳 Visualisasi Salah Satu Pohon Keputusan dari Model")
+                        with st.spinner("Menggambar pohon keputusan..."):
+                            fig_tree, ax_tree = plt.subplots(figsize=(25, 10))
                             plot_tree(
-                                model.estimators_[0],  # Ambil pohon pertama dari Random Forest
+                                model.estimators_[0],  # Mengambil pohon pertama dari Random Forest
                                 feature_names=vectorizer.get_feature_names_out(),
                                 class_names=["FAKE", "REAL"],
                                 filled=True,
-                                max_depth=3,  # Biar pohon tidak terlalu rumit
+                                max_depth=3,
                                 fontsize=10,
-                                ax=ax
+                                ax=ax_tree
                             )
-                            st.pyplot(fig)
+                            st.pyplot(fig_tree)
 
-                        # === Tombol Unduh ===
-                        csv = df_uploaded.to_csv(index=False).encode('utf-8')
+                        # Kesimpulan Dinamis (dipindahkan ke akhir)
+                        st.markdown("---")
+                        st.subheader("📝 Ringkasan Kesimpulan")
+                        total_berita = len(df_uploaded)
+                        jumlah_fake = label_counts.get('FAKE', 0)
+                        jumlah_real = label_counts.get('REAL', 0)
+                        persen_fake = (jumlah_fake / total_berita) * 100
+                        persen_real = (jumlah_real / total_berita) * 100
+                        mayoritas = "FAKE" if jumlah_fake > jumlah_real else "REAL"
+
+                        if lang == "Indonesia":
+                            kesimpulan_text = f"""
+                            Dari total **{total_berita}** berita yang dianalisis:
+                            - **{jumlah_fake} berita ({persen_fake:.1f}%)** terdeteksi sebagai **FAKE**.
+                            - **{jumlah_real} berita ({persen_real:.1f}%)** terdeteksi sebagai **REAL**.
+                            Secara keseluruhan, mayoritas berita dalam file Anda diklasifikasikan sebagai **{mayoritas}**.
+                            """
+                            st.write(kesimpulan_text)
+                        else:
+                            conclusion_text = f"""
+                            Out of a total of **{total_berita}** news articles analyzed:
+                            - **{jumlah_fake} articles ({persen_fake:.1f}%)** were detected as **FAKE**.
+                            - **{jumlah_real} articles ({persen_real:.1f}%)** were detected as **REAL**.
+                            Overall, the majority of the news in your file is classified as **{mayoritas}**.
+                            """
+                            st.write(conclusion_text)
+                        
+                        # Tombol Unduh
+                        csv_output = df_uploaded.to_csv(index=False).encode('utf-8')
                         st.download_button(
-                            label="Unduh Hasil Klasifikasi" if lang == "Indonesia" else "Download Classification Results",
-                            data=csv,
-                            file_name='hasil_klasifikasi.csv',
+                            label="Unduh Hasil Analisis" if lang == "Indonesia" else "Download Analysis Results",
+                            data=csv_output,
+                            file_name='hasil_klasifikasi_berita.csv',
                             mime='text/csv',
                         )
-        else:
-            if lang == "Indonesia":
-                st.error("❌ **Peringatan:** File CSV Anda harus memiliki kolom bernama 'title' dan 'text'.")
             else:
-                st.error("❌ **Warning:** Your CSV file must contain columns named 'title' and 'text'.")
-    except Exception as e:
-        st.error(f"Terjadi kesalahan saat memproses file: {e}")
+                st.error("❌ Peringatan: File CSV Anda harus memiliki kolom bernama 'title' dan 'text'.")
+        except Exception as e:
+            st.error(f"Terjadi kesalahan saat memproses file: {e}")
 
 # === Creator Display (Footer) ===
 creator_info_html = """
