@@ -3,6 +3,8 @@ import pickle
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.tree import plot_tree
+import matplotlib.pyplot as plt
 import base64
 from io import StringIO
 
@@ -252,52 +254,85 @@ elif menu == "Klasifikasi":
     
     st.markdown("---")
 
-    # --- Bagian Unggah & Klasifikasi File ---
-    if lang == "Indonesia":
-        st.header("📂 Atau Unggah File CSV untuk Klasifikasi Massal")
-        st.info("Pastikan file Anda memiliki kolom 'title' dan 'text' untuk hasil terbaik.")
-    else: # English
-        st.header("📂 Or Upload a CSV File for Bulk Classification")
-        st.info("Ensure your file has 'title' and 'text' columns for the best results.")
+# --- Bagian Unggah & Klasifikasi File ---
+if lang == "Indonesia":
+    st.header("📂 Atau Unggah File CSV untuk Klasifikasi Massal")
+    st.info("Pastikan file Anda memiliki kolom 'title' dan 'text' untuk hasil terbaik.")
+else:  # English
+    st.header("📂 Or Upload a CSV File for Bulk Classification")
+    st.info("Ensure your file has 'title' and 'text' columns for the best results.")
 
-    uploaded_file = st.file_uploader("Pilih file CSV", type="csv", label_visibility="collapsed")
+uploaded_file = st.file_uploader("Pilih file CSV", type="csv", label_visibility="collapsed")
 
-    if uploaded_file is not None:
-        try:
-            df_uploaded = pd.read_csv(uploaded_file)
-            if 'title' in df_uploaded.columns and 'text' in df_uploaded.columns:
-                if not pd.api.types.is_string_dtype(df_uploaded['title']) or not pd.api.types.is_string_dtype(df_uploaded['text']):
-                    if lang == "Indonesia":
-                        st.error("❌ **Peringatan:** Kolom 'title' dan 'text' harus berisi data teks (kata/kalimat), bukan angka.")
-                    else:
-                        st.error("❌ **Warning:** The 'title' and 'text' columns must contain text data (words/sentences), not numbers.")
-                else:
-                    st.success("✅ File berhasil diunggah. Klik tombol di bawah untuk memulai klasifikasi.")
-                    
-                    if st.button("Mulai Klasifikasi File" if lang == "Indonesia" else "Start File Classification", type="primary"):
-                        with st.spinner('Memproses file...'):
-                            df_uploaded['full_text'] = df_uploaded['title'].astype(str) + " " + df_uploaded['text'].astype(str)
-                            X_uploaded = vectorizer.transform(df_uploaded['full_text'])
-                            predictions = model.predict(X_uploaded)
-                            df_uploaded['prediksi'] = ['REAL' if p == 1 else 'FAKE' for p in predictions]
-                            
-                            st.write("**Hasil Klasifikasi:**")
-                            st.dataframe(df_uploaded)
-                            
-                            csv = df_uploaded.to_csv(index=False).encode('utf-8')
-                            st.download_button(
-                                label="Unduh Hasil Klasifikasi" if lang == "Indonesia" else "Download Classification Results",
-                                data=csv,
-                                file_name='hasil_klasifikasi.csv',
-                                mime='text/csv',
-                            )
-            else:
+if uploaded_file is not None:
+    try:
+        df_uploaded = pd.read_csv(uploaded_file)
+        # === Validasi Kolom ===
+        if {'title', 'text'}.issubset(df_uploaded.columns):
+            # Pastikan kolom teks bertipe string
+            if not (pd.api.types.is_string_dtype(df_uploaded['title']) and
+                    pd.api.types.is_string_dtype(df_uploaded['text'])):
                 if lang == "Indonesia":
-                    st.error("❌ **Peringatan:** File CSV Anda harus memiliki kolom bernama 'title' dan 'text'.")
+                    st.error("❌ **Peringatan:** Kolom 'title' dan 'text' harus berisi data teks (kata/kalimat), bukan angka.")
                 else:
-                    st.error("❌ **Warning:** Your CSV file must contain columns named 'title' and 'text'.")
-        except Exception as e:
-            st.error(f"Terjadi kesalahan saat memproses file: {e}")
+                    st.error("❌ **Warning:** The 'title' and 'text' columns must contain text data (words/sentences), not numbers.")
+            else:
+                st.success("✅ File berhasil diunggah. Klik tombol di bawah untuk memulai klasifikasi." if lang == "Indonesia" else "✅ File uploaded successfully. Click the button below to start classification.")
+
+                if st.button("Mulai Klasifikasi File" if lang == "Indonesia" else "Start File Classification", type="primary"):
+                    with st.spinner('Memproses file...' if lang == "Indonesia" else 'Processing file...'):
+                        # === Prediksi ===
+                        df_uploaded['full_text'] = df_uploaded['title'].astype(str) + " " + df_uploaded['text'].astype(str)
+                        X_uploaded = vectorizer.transform(df_uploaded['full_text'])
+                        predictions = model.predict(X_uploaded)
+                        df_uploaded['prediksi'] = ['REAL' if p == 1 else 'FAKE' for p in predictions]
+
+                        # === Tampilkan Hasil ===
+                        st.markdown("**Hasil Klasifikasi:**" if lang == "Indonesia" else "**Classification Results:**")
+                        st.dataframe(df_uploaded)
+
+                        # === Visualisasi Hasil ===
+                        st.subheader("📊 Visualisasi Hasil Klasifikasi" if lang == "Indonesia" else "📊 Classification Visualization")
+                        label_counts = df_uploaded['prediksi'].value_counts()
+
+                        # Bar Chart (Streamlit built-in)
+                        st.bar_chart(label_counts)
+
+                        # Pie Chart (matplotlib)
+                        fig, ax = plt.subplots()
+                        ax.pie(label_counts, labels=label_counts.index, autopct='%1.1f%%', startangle=90)
+                        ax.axis('equal')
+                        st.pyplot(fig)
+
+                        st.write("**Visualisasi Salah Satu Pohon dari Random Forest:**")
+                        with st.spinner("Menampilkan pohon..."):
+                            fig, ax = plt.subplots(figsize=(20, 10))
+                            plot_tree(
+                                model.estimators_[0],  # Ambil pohon pertama dari Random Forest
+                                feature_names=vectorizer.get_feature_names_out(),
+                                class_names=["FAKE", "REAL"],
+                                filled=True,
+                                max_depth=3,  # Biar pohon tidak terlalu rumit
+                                fontsize=10,
+                                ax=ax
+                            )
+                            st.pyplot(fig)
+
+                        # === Tombol Unduh ===
+                        csv = df_uploaded.to_csv(index=False).encode('utf-8')
+                        st.download_button(
+                            label="Unduh Hasil Klasifikasi" if lang == "Indonesia" else "Download Classification Results",
+                            data=csv,
+                            file_name='hasil_klasifikasi.csv',
+                            mime='text/csv',
+                        )
+        else:
+            if lang == "Indonesia":
+                st.error("❌ **Peringatan:** File CSV Anda harus memiliki kolom bernama 'title' dan 'text'.")
+            else:
+                st.error("❌ **Warning:** Your CSV file must contain columns named 'title' and 'text'.")
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat memproses file: {e}")
 
 # === Creator Display (Footer) ===
 creator_info_html = """
